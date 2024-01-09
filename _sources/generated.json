@@ -1,0 +1,17 @@
+{
+    "appimaged": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "appimaged",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-1pWGh4VJQn9AU1DJOni7fvlmV7EUKfDprGKViIF4ohI=",
+            "type": "url",
+            "url": "https://github.com/probonopd/go-appimage/releases/download/continuous/appimaged-817-x86_64.AppImage"
+        },
+        "version": "appimaged-817-x86_64.AppImage"
+    }
+}

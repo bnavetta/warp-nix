@@ -1,0 +1,6 @@
+[appimaged]
+# Because go-appimage releases a continuous build versioned by the GitHub action build number,
+# there's no good way to automatically construct the download URL. Instead, just scrape the page.
+src.webpage = "https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous"
+src.regex = "appimaged-\\d+-x86_64\\.AppImage"
+fetch.url = "https://github.com/probonopd/go-appimage/releases/download/continuous/$ver"
