@@ -4,7 +4,7 @@ This Nix flake defines a NixOS module for running [AppImages](https://appimage.o
 
 It configures [`nix-ld`](https://github.com/Mic92/nix-ld) to run AppImages as-is, and can optionally configure [appimaged](https://github.com/probonopd/go-appimage) for system integration.
 
-## Installation
+## Installation (Flakes)
 
 First, add this to your `flake.nix`:
 
@@ -21,15 +21,42 @@ First, add this to your `flake.nix`:
 Then, import and configure the module in your NixOS configuration:
 
 ```nix
-modules = [
-    warp-nix.nixosModules.default
-];
+{
+    imports = [
+        warp-nix.nixosModules.default
+    ];
 
-programs.warp = {
-    # Support running AppImages
-    enable = true;
-    # Install Appimaged (x86-64 only)
-    enableAppimaged = true;
-};
+    programs.warp = {
+        # Support running AppImages
+        enable = true;
+        # Install Appimaged (x86-64 only)
+        enableAppimaged = true;
+    };
+}
+```
 
+## Installation (No Flakes)
+
+I haven't tested this, but believe it should work. First, install using:
+
+```sh
+$ sudo nix-channel --add https://github.com/bnavetta/warp-nix/archive/main.tar.gz warp-nix
+$ sudo nix-channel --update
+```
+
+Then, import it in `/etc/nixos/configuration.nix`:
+
+```nix
+{
+    imports = [
+        <warp-nix/module.nix>
+    ];
+
+    programs.warp = {
+        # Support running AppImages
+        enable = true;
+        # Install Appimaged (x86-64 only)
+        enableAppimaged = true;
+    };
+}
 ```
