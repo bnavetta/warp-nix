@@ -4,7 +4,8 @@ let
   sources = pkgs.callPackage ./_sources/generated.nix { };
 
   appimaged = pkgs.stdenv.mkDerivation {
-    inherit (sources.appimaged) pname src;
+    name = "appimaged";
+    inherit (sources.appimaged) src;
     buildInputs = [ pkgs.makeWrapper ];
     dontStrip = true;
     phases = [ "installPhase" "fixupPhase" ];
@@ -36,18 +37,48 @@ in
     # Set up nix-ld to run AppImages.
     programs.nix-ld = {
       enable = true;
-      # This is based on https://github.com/NixOS/nixpkgs/blob/9d12c7a8167e6380add23a8060282cc2b72bd693/pkgs/build-support/appimage/default.nix#L93
+      # This is based on https://github.com/NixOS/nixpkgs/blob/9d12c7a8167e6380add23a8060282cc2b72bd693/pkgs/build-support/appimage/default.nix#L93,
+      # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/programs/nix-ld.nix,
       # and trial and error.
-      libraries = lib.attrValues {
-        # TODO: desktop-file-utils is needed on $PATH, not $LD_LIBRARY_PATH
-        inherit (pkgs) desktop-file-utils fuse zlib;
-
-        # Graphics
-        inherit (pkgs) libGL libdrm mesa;
-        # X11
-        inherit (pkgs) libxkbcommon;
-        inherit (pkgs.xorg) libxcb libXcomposite libXtst libXrandr libXext libX11 libXfixes libXinerama libXdamage libXcursor libXrender libXt libXi libSM libICE;
-      };
+      libraries = [
+        pkgs.acl
+        pkgs.attr
+        pkgs.bzip2
+        pkgs.curl
+        pkgs.desktop-file-utils
+        pkgs.fuse
+        pkgs.glib
+        pkgs.glibcLocales
+        pkgs.libdrm
+        pkgs.libGL
+        pkgs.libsodium
+        pkgs.libssh
+        pkgs.libxkbcommon
+        pkgs.libxml2
+        pkgs.mesa
+        pkgs.openssl
+        pkgs.stdenv.cc.cc
+        pkgs.systemd
+        pkgs.util-linux
+        pkgs.xorg.libICE
+        pkgs.xorg.libSM
+        pkgs.xorg.libX11
+        pkgs.xorg.libxcb
+        pkgs.xorg.libXcomposite
+        pkgs.xorg.libXcursor
+        pkgs.xorg.libXdamage
+        pkgs.xorg.libXext
+        pkgs.xorg.libXfixes
+        pkgs.xorg.libXi
+        pkgs.xorg.libXinerama
+        pkgs.xorg.libXrandr
+        pkgs.xorg.libXrender
+        pkgs.xorg.libXt
+        pkgs.xorg.libXtst
+        pkgs.xz
+        pkgs.zlib
+        pkgs.zstd
+      ];
     };
 
     systemd.user.services.appimaged = lib.mkIf cfg.enableAppimaged {
@@ -60,13 +91,13 @@ in
       startLimitBurst = 5;
 
       serviceConfig = {
-        ExecStart = "${lib.getExe appimaged}";
+        ExecStart = "${appimaged}/bin/appimaged";
         LimitNOFILE = 65536;
         Restart = "on-failure";
       };
 
       environment = {
-        LAUNCHED_BY_SYSTEMD = 1;
+        LAUNCHED_BY_SYSTEMD = "1";
         NIX_LD = config.environment.variables.NIX_LD;
         NIX_LD_LIBRARY_PATH = config.environment.variables.NIX_LD_LIBRARY_PATH;
       };
