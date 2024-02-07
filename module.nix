@@ -20,6 +20,11 @@ let
     '';
     meta.mainProgram = "appimaged";
   };
+
+  warp = pkgs.fetchurl {
+    url = "https://storage.googleapis.com/warp-releases/stable/v0.2024.01.02.08.02.stable_02/Warp-x86_64.AppImage";
+    sha256 = "sha256-olHiGdd09x5qnHpEp1RPbai2nnH1eFZfQs59+A3UC6Y=";
+  };
 in
 {
   options = {
@@ -34,6 +39,15 @@ in
       { assertion = cfg.enableAppimaged -> pkgs.stdenv.isx86_64; message = "Appimaged is currently only supported on x86-64"; }
     ];
 
+    # Copy Warp into ~/Applications. Making it writable lets Warp auto-update.
+    system.userActivationScripts.warpSetup = ''
+      mkdir -p $HOME/Applications
+      if [ ! -e $HOME/Applications/Warp.AppImage ]; then
+        cp ${warp} $HOME/Applications/Warp.AppImage
+        chmod +x $HOME/Applications/Warp.AppImage
+      fi
+    '';
+
     # Set up nix-ld to run AppImages.
     programs.nix-ld = {
       enable = true;
@@ -46,6 +60,7 @@ in
         pkgs.bzip2
         pkgs.curl
         pkgs.desktop-file-utils
+        pkgs.fontconfig.out
         pkgs.fuse
         pkgs.glib
         pkgs.glibcLocales
