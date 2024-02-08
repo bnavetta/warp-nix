@@ -60,7 +60,7 @@ in
         pkgs.bzip2
         pkgs.curl
         pkgs.desktop-file-utils
-        pkgs.fontconfig.out
+        pkgs.fontconfig.lib
         pkgs.fuse
         pkgs.glib
         pkgs.glibcLocales
