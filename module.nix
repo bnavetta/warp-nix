@@ -22,7 +22,7 @@ let
   };
 
   warp = pkgs.fetchurl {
-    url = "https://storage.googleapis.com/warp-releases/stable/v0.2024.01.02.08.02.stable_02/Warp-x86_64.AppImage";
+    url = "https://releases.warp.dev/stable/v0.2024.02.14.15.46.stable_00/Warp-x86_64.AppImage";
     sha256 = "sha256-olHiGdd09x5qnHpEp1RPbai2nnH1eFZfQs59+A3UC6Y=";
   };
 in
